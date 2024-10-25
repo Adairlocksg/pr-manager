@@ -1,13 +1,12 @@
-import Login from "@/components/login/login";
 import Manager from "@/components/manager";
 import { Route, Routes } from "react-router-dom";
 
-const Router = () => {
+const InteralRouter = () => {
   return (
     <Routes>
-      <Route path="/*" element={<Login />} />
+      <Route path="/*" element={<Manager />} />
     </Routes>
   );
 };
 
-export default Router;
+export default InteralRouter;
