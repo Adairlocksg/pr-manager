@@ -29,7 +29,7 @@ const ManagerHeader = ({ prQuant }: Props) => {
     <div>
       <div className="w-full flex justify-between">
         <h1 className="text-lg">Bem vindo: {username}</h1>
-        <h1 className="text-3xl font-bold">Pull Request Hub</h1>
+        <h1 className="text-3xl font-bold">PR Manager</h1>
         <div className="flex items-center gap-4">
           <p
             className="text-blue-500 hover:underline cursor-pointer"
