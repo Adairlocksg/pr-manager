@@ -3,3 +3,23 @@ steps:
   displayName: 'Use Node 18.x'
   inputs:
     versionSpec: 18.x
+- task: Npm@1
+  inputs:
+    command: 'install'    
+- task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          
+          cd $(Build.SourcesDirectory)
+          
+          npm run build
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)/dist/'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+    
