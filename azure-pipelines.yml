@@ -1,0 +1,36 @@
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 18.x'
+  inputs:
+    versionSpec: 18.x
+
+- task: Npm@1
+  displayName: 'Install dependencies'
+  inputs:
+    command: 'install'
+
+- task: PowerShell@2
+  displayName: 'Run build script'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Navega até o diretório do código-fonte
+      cd $(Build.SourcesDirectory)
+      # Executa o comando de build
+      npm run build
+
+- task: ArchiveFiles@2
+  displayName: 'Archive build files'
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)/dist/'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
