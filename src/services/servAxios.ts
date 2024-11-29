@@ -1,4 +1,3 @@
-import { API_BASE_URL } from "@/api/api";
 import axios from "axios";
 
 export class AxiosService {
@@ -9,6 +8,6 @@ export class AxiosService {
   }
 
   public static setBaseUrl() {
-    axios.defaults.baseURL = API_BASE_URL;
+    axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
   }
 }
