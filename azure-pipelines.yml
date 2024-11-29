@@ -12,6 +12,13 @@ steps:
   inputs:
     command: 'install'
 
+- script: |
+    echo "VITE_BASE_URL is $(VITE_BASE_URL)"
+    echo "NODE_ENV is $(NODE_ENV)"
+    echo "API_URL is $(API_URL)"
+    echo "FEATURE_FLAG is $(FEATURE_FLAG)"
+  displayName: 'Display environment variables'
+  
 - task: PowerShell@2
   displayName: 'Run build script'
   inputs:
