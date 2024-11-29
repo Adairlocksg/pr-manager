@@ -9,6 +9,10 @@ steps:
   inputs:
     command: 'install'
 
+- script: |
+    echo "VITE_BASE_URL is $(VITE_BASE_URL)"
+  displayName: 'Display environment variables'
+
 - task: PowerShell@2
   displayName: 'Run build script'
   inputs:
