@@ -1,27 +1,25 @@
+import { Api } from "@/api/api";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import ManagerHeader from "./manager.header";
-import { useEffect, useState } from "react";
 import { PRCollection } from "@/types/PullRequests";
-import { useManagerContext } from "../contexts/manager-context";
-import { Loader2Icon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Api } from "@/api/api";
+import { useManagerContext } from "../contexts/manager-context";
+import ManagerHeader from "./manager.header";
 
 export default function Manager() {
   const [collections, setCollections] = useState<PRCollection[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [prQuant, setPrQuant] = useState(0);
-  const { shouldUpdate, setShouldUpdate, doUpdatePrIds } = useManagerContext();
+  const { shouldUpdate, doSetShouldUpdate, doUpdatePrIds, isLoadingBtnUpdate, doSetIsLoadingBtnUpdate } = useManagerContext();
 
   useEffect(() => {
     if (!shouldUpdate) return;
     getPrs();
-    setShouldUpdate(false);
+    doSetShouldUpdate(false);
   }, [shouldUpdate]);
 
   useEffect(() => {
@@ -29,7 +27,6 @@ export default function Manager() {
   }, []);
 
   const getPrs = async () => {
-    setIsLoading(true);
     try {
       const data = await Api.get<null, PRCollection[]>("pullRequests");
 
@@ -47,19 +44,16 @@ export default function Manager() {
 
       doUpdatePrIds(prIds);
       toast.success("Pull requests atualizadas com sucesso");
-    } catch (error) {
-      toast.error(`Ocorreu um erro ao buscar as Pull requests: ${error}`);
-    } finally {
-      setIsLoading(false);
+      isLoadingBtnUpdate && doSetIsLoadingBtnUpdate(false);
+    } catch (error: any) {
+      toast.error(`Ocorreu um erro ao buscar as Pull requests: ${error.response.data.detail}`);
     }
   };
 
   return (
     <div className="m-10 h-full">
       <ManagerHeader prQuant={prQuant} />
-      {isLoading ? (
-        <Loader2Icon className="w-10 h-10 mx-auto mt-10 animate-spin " />
-      ) : (
+      {(
         <Accordion
           type="multiple"
           className="border border-gray-700 rounded-lg shadow-lg p-4 mt-5"

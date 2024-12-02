@@ -9,9 +9,11 @@ import {
 
 type IManagerContext = {
   shouldUpdate: boolean;
-  setShouldUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  doSetShouldUpdate: (shouldUpdate: boolean) => void;
   doUpdatePrIds: (prIds: number[]) => void;
   doSetUpdateInterval: (interval: EnumUpdatePrInterval) => void;
+  doSetIsLoadingBtnUpdate: (isLoading: boolean) => void
+  isLoadingBtnUpdate: boolean;
 };
 
 const ManagerContext = createContext<IManagerContext>({} as IManagerContext);
@@ -29,6 +31,7 @@ export const useManagerContext = () => {
 export const ManagerContextProvider = ({ children }: PropsWithChildren) => {
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [prIds, setPrIds] = useState<number[]>([]);
+  const [isLoadingBtnUpdate, setIsLoadingBtnUpdate] = useState(false);
   const [updateInterval, setUpdateInterval] = useState(
     EnumUpdatePrInterval.NOT_DEFINED
   );
@@ -36,6 +39,14 @@ export const ManagerContextProvider = ({ children }: PropsWithChildren) => {
   const doSetUpdateInterval = (interval: EnumUpdatePrInterval) => {
     setUpdateInterval(interval);
   };
+
+  const doSetIsLoadingBtnUpdate = (isLoading: boolean) => {
+    setIsLoadingBtnUpdate(isLoading);
+  };
+
+  const doSetShouldUpdate = (shouldUpdate: boolean) => {
+    setShouldUpdate(shouldUpdate);
+  }
 
   useEffect(() => {
     if (updateInterval === EnumUpdatePrInterval.NOT_DEFINED) return;
@@ -69,9 +80,11 @@ export const ManagerContextProvider = ({ children }: PropsWithChildren) => {
     <ManagerContext.Provider
       value={{
         shouldUpdate,
-        setShouldUpdate,
+        doSetShouldUpdate,
         doUpdatePrIds,
-        doSetUpdateInterval
+        doSetUpdateInterval,
+        doSetIsLoadingBtnUpdate,
+        isLoadingBtnUpdate
       }}
     >
       {children}
