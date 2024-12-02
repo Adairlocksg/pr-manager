@@ -1,32 +1,31 @@
 import {
-  AlertDialogHeader,
-  AlertDialogFooter,
+  AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogDescription,
-} from "@/components/ui/alert-dialog";
 
-import { CogIcon, SaveIcon, XIcon } from "lucide-react";
-import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
+import { Api } from "@/api/api";
+import { useManagerContext } from "@/components/contexts/manager-context";
 import { Collections } from "@/types/Collections";
+import { CogIcon, SaveIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useManagerContext } from "@/components/contexts/manager-context";
-import { Api } from "@/api/api";
 
 const ManagerOptions = () => {
   const [collections, setCollections] = useState<Collections[]>([]);
-  const { setShouldUpdate } = useManagerContext();
+  const [openModalOptions, setOpenModalOptions] = useState(false);
+  const { doSetShouldUpdate } = useManagerContext();
 
-  const handleOpenChange = async (open: boolean) => {
-    if (!open) return;
+  const handleOpenChange = async () => {
+    setOpenModalOptions(!openModalOptions);
 
     try {
       const data = await Api.get<null, Collections[]>("collectionsInUse");
@@ -54,15 +53,16 @@ const ManagerOptions = () => {
     try {
       await Api.post("collectionsForUse", { collections });
       toast.success("Collections salvas com sucesso");
-      setShouldUpdate(true);
-      document.getElementById("btn-close")?.click();
-    } catch (error) {
-      toast.error(`Erro ao salvar collections: ${error}`);
+      doSetShouldUpdate(true);
+    } catch (error : any) {
+      toast.error(`Erro ao salvar collections: ${error.response.data.detail}`);
+    } finally {
+      setOpenModalOptions(false);
     }
   };
 
   return (
-    <AlertDialog onOpenChange={handleOpenChange}>
+    <AlertDialog open={openModalOptions} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
         <Button>
           Opções <CogIcon />
@@ -97,14 +97,13 @@ const ManagerOptions = () => {
         })}
         <AlertDialogFooter>
           <AlertDialogCancel
-            id="btn-close"
             className="bg-red-900 border-none hover:bg-red-950"
           >
             Cancelar <XIcon />
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleSave}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input shadow-sm hover:text-accent-foreground h-9 px-4 py-2 mt-2 sm:mt-0 bg-slate-800 hover:bg-slate-900"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input shadow-sm hover:text-accent-foreground h-9 px-4 py-2 mt-2 text-white sm:mt-0 bg-slate-800 hover:bg-slate-900"
           >
             Salvar <SaveIcon />
           </AlertDialogAction>

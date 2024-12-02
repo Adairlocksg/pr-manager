@@ -1,13 +1,13 @@
 import { LoginService } from "@/services/servLogin";
-import ManagerOptions from "./options/manager.options";
-import { Button } from "../ui/button";
-import { useManagerContext } from "../contexts/manager-context";
-import { RefreshCcwIcon } from "lucide-react";
 import {
   EnumUpdatePrIntervalToCombo,
   stringUpdateIntervalToEnum,
 } from "@/types/UpdatePrInterval";
+import { RefreshCcwIcon } from "lucide-react";
+import { useManagerContext } from "../contexts/manager-context";
+import { Button } from "../ui/button";
 import { Combobox } from "../ui/combobox";
+import ManagerOptions from "./options/manager.options";
 
 type Props = {
   prQuant: number;
@@ -15,14 +15,15 @@ type Props = {
 
 const ManagerHeader = ({ prQuant }: Props) => {
   const username = localStorage.getItem("@username");
-  const { setShouldUpdate, doSetUpdateInterval } = useManagerContext();
+  const { doSetShouldUpdate, doSetUpdateInterval, doSetIsLoadingBtnUpdate, isLoadingBtnUpdate } = useManagerContext();
   const handleLogout = () => {
     LoginService.logout();
     window.location.reload();
   };
 
   const handleClickRefresh = () => {
-    setShouldUpdate(true);
+    doSetShouldUpdate(true);
+    doSetIsLoadingBtnUpdate(true);
   };
 
   return (
@@ -53,7 +54,7 @@ const ManagerHeader = ({ prQuant }: Props) => {
             }}
           />
           <Button onClick={handleClickRefresh} variant="secondary">
-            Atualizar <RefreshCcwIcon />
+            Atualizar {isLoadingBtnUpdate ? <RefreshCcwIcon className="animate-spin" /> : <RefreshCcwIcon />}
           </Button>
         </div>
       </div>

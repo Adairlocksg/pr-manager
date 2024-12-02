@@ -1,5 +1,5 @@
-import path from "path";
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -12,6 +12,6 @@ export default defineConfig({
   },
   define: {
     "process.env.VITE_BASE_URL":
-      process.env.VITE_BASE_URL || "http://localhost:3000",
+      process.env.VITE_BASE_URL
   },
 });
