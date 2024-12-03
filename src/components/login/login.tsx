@@ -47,8 +47,8 @@ const Login = () => {
       AxiosService.setDefaultHeaders(data.userId);
       window.location.reload();
       toast.success("Login efetuado com sucesso");
-    } catch {
-      toast.error("Usuário ou senha inválidos");
+    } catch (error) {
+      toast.error(`Errro ao efetuar login: ${AxiosService.handleError(error)}`);
     } finally {
       setIsLoading(false);
     }
@@ -63,13 +63,15 @@ const Login = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Button variant="outline" className="h-8 w-10">PAT</Button>
+                <Button variant="outline" className="h-8 w-10">
+                  PAT
+                </Button>
               </TooltipTrigger>
               <TooltipContent>
                 <p className="text-base">
                   Para informações de como gerar o token clique{" "}
                   <a
-                  className="text-blue-500 hover:underline"
+                    className="text-blue-500 hover:underline"
                     target="_blank"
                     href="https://learn.microsoft.com/pt-pt/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows#create-a-pat"
                   >

@@ -18,6 +18,7 @@ import { Collections } from "@/types/Collections";
 import { CogIcon, SaveIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AxiosService } from "@/services/servAxios";
 
 const ManagerOptions = () => {
   const [collections, setCollections] = useState<Collections[]>([]);
@@ -55,7 +56,9 @@ const ManagerOptions = () => {
       toast.success("Collections salvas com sucesso");
       doSetShouldUpdate(true);
     } catch (error) {
-      toast.error(`Erro ao salvar collections: ${error}`);
+      toast.error(
+        `Erro ao salvar collections: ${AxiosService.handleError(error)}`
+      );
     } finally {
       setOpenModalOptions(false);
     }
