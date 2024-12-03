@@ -7,9 +7,9 @@ import { Toaster } from "sonner";
 import { ManagerContextProvider } from "./components/contexts/manager-context";
 
 const App = () => {
-  const token = localStorage.getItem("@token");
+  const token: string | null = localStorage.getItem("@token");
 
-  const router = token ? <InteralRouter /> : <Router />;
+  const router: JSX.Element = token ? <InteralRouter /> : <Router />;
 
   AxiosService.setBaseUrl();
   AxiosService.setDefaultHeaders(token ?? "");

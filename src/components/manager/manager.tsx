@@ -10,11 +10,20 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useManagerContext } from "../contexts/manager-context";
 import ManagerHeader from "./manager.header";
+import { AxiosService } from "@/services/servAxios";
 
 export default function Manager() {
   const [collections, setCollections] = useState<PRCollection[]>([]);
   const [prQuant, setPrQuant] = useState(0);
-  const { shouldUpdate, doSetShouldUpdate, doUpdatePrIds, isLoadingBtnUpdate, doSetIsLoadingBtnUpdate } = useManagerContext();
+  const {
+    shouldUpdate,
+    doSetShouldUpdate,
+    doUpdatePrIds,
+    isLoadingBtnUpdate,
+    doSetIsLoadingBtnUpdate,
+    shouldUpdateConnections,
+    doSetShouldUpdateConnections,
+  } = useManagerContext();
 
   useEffect(() => {
     if (!shouldUpdate) return;
@@ -23,8 +32,14 @@ export default function Manager() {
   }, [shouldUpdate]);
 
   useEffect(() => {
-    getPrs();
+    atualizeConnections();
   }, []);
+
+  useEffect(() => {
+    if (!shouldUpdateConnections) return;
+    atualizeConnections();
+    doSetShouldUpdateConnections(false);
+  }, [shouldUpdateConnections]);
 
   const getPrs = async () => {
     try {
@@ -44,16 +59,50 @@ export default function Manager() {
 
       doUpdatePrIds(prIds);
       toast.success("Pull requests atualizadas com sucesso");
-      isLoadingBtnUpdate && doSetIsLoadingBtnUpdate(false);
-    } catch (error: any) {
-      toast.error(`Ocorreu um erro ao buscar as Pull requests: ${error.response.data.detail}`);
+    } catch (error: unknown) {
+      toast.error(
+        `Ocorreu um erro ao buscar as Pull requests: ${AxiosService.handleError(
+          error
+        )}`
+      );
+    } finally {
+      if (isLoadingBtnUpdate) doSetIsLoadingBtnUpdate(false);
+    }
+  };
+
+  const atualizeConnections = async () => {
+    try {
+      const data = await Api.post<null, PRCollection[]>("atualizeConnections");
+
+      setCollections(data);
+
+      setPrQuant(
+        data.reduce((acc, collection) => acc + collection.pendingQuant, 0)
+      );
+
+      const prIds = data.flatMap((collection) =>
+        collection.projects.flatMap((project) =>
+          project.pullRequests.map((pr) => pr.id)
+        )
+      );
+
+      doUpdatePrIds(prIds);
+      toast.success("Pull requests em uso atualizadas com sucesso"!);
+    } catch (error: unknown) {
+      toast.error(
+        `Ocorreu um erro ao buscar as Pull requests: ${AxiosService.handleError(
+          error
+        )}`
+      );
+    } finally {
+      if (isLoadingBtnUpdate) doSetIsLoadingBtnUpdate(false);
     }
   };
 
   return (
     <div className="m-10 h-full">
       <ManagerHeader prQuant={prQuant} />
-      {(
+      {
         <Accordion
           type="multiple"
           className="border border-gray-700 rounded-lg shadow-lg p-4 mt-5"
@@ -101,7 +150,7 @@ export default function Manager() {
             </AccordionItem>
           ))}
         </Accordion>
-      )}
+      }
     </div>
   );
 }

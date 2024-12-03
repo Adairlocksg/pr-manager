@@ -15,7 +15,7 @@ export class Api {
 
   public static async post<T, TResponse>(
     url: string,
-    body: T,
+    body?: T,
     config?: AxiosRequestConfig<unknown>
   ): Promise<TResponse> {
     const { data } = await axios.post<T, Reponse<TResponse>>(url, body, config);

@@ -54,8 +54,8 @@ const ManagerOptions = () => {
       await Api.post("collectionsForUse", { collections });
       toast.success("Collections salvas com sucesso");
       doSetShouldUpdate(true);
-    } catch (error : any) {
-      toast.error(`Erro ao salvar collections: ${error.response.data.detail}`);
+    } catch (error) {
+      toast.error(`Erro ao salvar collections: ${error}`);
     } finally {
       setOpenModalOptions(false);
     }
@@ -96,9 +96,7 @@ const ManagerOptions = () => {
           );
         })}
         <AlertDialogFooter>
-          <AlertDialogCancel
-            className="bg-red-900 border-none hover:bg-red-950"
-          >
+          <AlertDialogCancel className="bg-red-900 border-none hover:bg-red-950">
             Cancelar <XIcon />
           </AlertDialogCancel>
           <AlertDialogAction

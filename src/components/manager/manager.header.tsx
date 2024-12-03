@@ -15,14 +15,19 @@ type Props = {
 
 const ManagerHeader = ({ prQuant }: Props) => {
   const username = localStorage.getItem("@username");
-  const { doSetShouldUpdate, doSetUpdateInterval, doSetIsLoadingBtnUpdate, isLoadingBtnUpdate } = useManagerContext();
+  const {
+    doSetUpdateInterval,
+    doSetIsLoadingBtnUpdate,
+    isLoadingBtnUpdate,
+    doSetShouldUpdateConnections,
+  } = useManagerContext();
   const handleLogout = () => {
     LoginService.logout();
     window.location.reload();
   };
 
   const handleClickRefresh = () => {
-    doSetShouldUpdate(true);
+    doSetShouldUpdateConnections(true);
     doSetIsLoadingBtnUpdate(true);
   };
 
@@ -54,7 +59,12 @@ const ManagerHeader = ({ prQuant }: Props) => {
             }}
           />
           <Button onClick={handleClickRefresh} variant="secondary">
-            Atualizar {isLoadingBtnUpdate ? <RefreshCcwIcon className="animate-spin" /> : <RefreshCcwIcon />}
+            Atualizar{" "}
+            {isLoadingBtnUpdate ? (
+              <RefreshCcwIcon className="animate-spin" />
+            ) : (
+              <RefreshCcwIcon />
+            )}
           </Button>
         </div>
       </div>
