@@ -11,6 +11,13 @@ import { toast } from "sonner";
 import { useManagerContext } from "../contexts/manager-context";
 import ManagerHeader from "./manager.header";
 import { AxiosService } from "@/services/servAxios";
+import { MessageSquareMore } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export default function Manager() {
   const [collections, setCollections] = useState<PRCollection[]>([]);
@@ -137,9 +144,25 @@ export default function Manager() {
                             >
                               {pr.id} - {pr.name}
                             </a>
-                            <p className="text-sm text-gray-400">
-                              {pr.ownerName} - {pr.repositoryName}
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm text-gray-400">
+                                {pr.ownerName} - {pr.repositoryName}
+                              </p>
+                              {pr.quantComents > 0 && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <MessageSquareMore className="w-5" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p className="text-base">
+                                        {pr.quantComents} comentário(s)
+                                      </p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </AccordionContent>
