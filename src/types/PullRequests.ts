@@ -20,4 +20,5 @@ export type PRCollectionProjectPR = {
   ownerName: string;
   repositoryName: string;
   url: string;
+  quantComents: number;
 };
