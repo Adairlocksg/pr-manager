@@ -8,6 +8,7 @@ import { useManagerContext } from "../contexts/manager-context";
 import { Button } from "../ui/button";
 import { Combobox } from "../ui/combobox";
 import ManagerOptions from "./options/manager.options";
+import { Input } from "../ui/input";
 
 type Props = {
   prQuant: number;
@@ -20,6 +21,8 @@ const ManagerHeader = ({ prQuant }: Props) => {
     doSetIsLoadingBtnUpdate,
     isLoadingBtnUpdate,
     doSetShouldUpdateConnections,
+    query,
+    doSetQuery,
   } = useManagerContext();
   const handleLogout = () => {
     LoginService.logout();
@@ -47,9 +50,17 @@ const ManagerHeader = ({ prQuant }: Props) => {
         </div>
       </div>
       <div className="w-full flex justify-between mt-2 items-center">
-        <h1 className="text-md border border-slate-600 p-2 rounded-md bg-slate-600">
-          {`${prQuant} Pull Requests pendentes`}
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-md border border-slate-600 p-2 rounded-md bg-slate-600 min-w-fit">
+            {`${prQuant} Pull Requests pendentes`}
+          </h1>
+          <Input
+            placeholder="Pesquisar"
+            className="w-80"
+            value={query}
+            onChange={(e) => doSetQuery(e.target.value)}
+          />
+        </div>
         <div className="flex items-center gap-2">
           <Combobox
             placeholder="Tempo de atualização"

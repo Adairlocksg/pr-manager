@@ -16,6 +16,8 @@ type IManagerContext = {
   isLoadingBtnUpdate: boolean;
   doSetShouldUpdateConnections: (shouldUpdateConnections: boolean) => void;
   shouldUpdateConnections: boolean;
+  query: string;
+  doSetQuery: (query: string) => void;
 };
 
 const ManagerContext = createContext<IManagerContext>({} as IManagerContext);
@@ -35,6 +37,7 @@ export const ManagerContextProvider = ({ children }: PropsWithChildren) => {
   const [prIds, setPrIds] = useState<number[]>([]);
   const [isLoadingBtnUpdate, setIsLoadingBtnUpdate] = useState(false);
   const [shouldUpdateConnections, setShouldUpdateConnections] = useState(false);
+  const [query, setQuery] = useState("");
   const [updateInterval, setUpdateInterval] = useState(
     EnumUpdatePrInterval.NOT_DEFINED
   );
@@ -53,6 +56,10 @@ export const ManagerContextProvider = ({ children }: PropsWithChildren) => {
 
   const doSetShouldUpdate = (shouldUpdate: boolean) => {
     setShouldUpdate(shouldUpdate);
+  };
+
+  const doSetQuery = (query: string) => {
+    setQuery(query);
   };
 
   useEffect(() => {
@@ -94,6 +101,8 @@ export const ManagerContextProvider = ({ children }: PropsWithChildren) => {
         isLoadingBtnUpdate,
         doSetShouldUpdateConnections,
         shouldUpdateConnections,
+        query,
+        doSetQuery,
       }}
     >
       {children}

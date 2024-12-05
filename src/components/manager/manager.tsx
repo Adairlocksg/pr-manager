@@ -21,6 +21,9 @@ import {
 
 export default function Manager() {
   const [collections, setCollections] = useState<PRCollection[]>([]);
+  const [filteredCollections, setFilteredCollections] = useState<
+    PRCollection[]
+  >([]);
   const [prQuant, setPrQuant] = useState(0);
   const {
     shouldUpdate,
@@ -30,6 +33,7 @@ export default function Manager() {
     doSetIsLoadingBtnUpdate,
     shouldUpdateConnections,
     doSetShouldUpdateConnections,
+    query,
   } = useManagerContext();
 
   useEffect(() => {
@@ -47,6 +51,29 @@ export default function Manager() {
     atualizeConnections();
     doSetShouldUpdateConnections(false);
   }, [shouldUpdateConnections]);
+
+  useEffect(() => {
+    if (query === "") {
+      setFilteredCollections(collections);
+      return;
+    }
+
+    const newFilteredCollections = collections
+      .map((collection) => ({
+        ...collection,
+        projects: collection.projects
+          .map((project) => ({
+            ...project,
+            pullRequests: project.pullRequests.filter((pr) =>
+              pr.name.toLowerCase().includes(query.toLowerCase())
+            ),
+          }))
+          .filter((project) => project.pullRequests.length > 0),
+      }))
+      .filter((collection) => collection.projects.length > 0);
+
+    setFilteredCollections(newFilteredCollections);
+  }, [query, collections]);
 
   const getPrs = async () => {
     try {
@@ -113,7 +140,7 @@ export default function Manager() {
           type="multiple"
           className="border border-gray-700 rounded-lg shadow-lg p-4 mt-5"
         >
-          {collections.map((collection) => (
+          {filteredCollections.map((collection) => (
             <AccordionItem
               key={collection.id}
               value={collection.id}
@@ -141,7 +168,7 @@ export default function Manager() {
                               className="text-blue-400 font-medium hover:underline"
                               rel="noopener noreferrer"
                             >
-                              {pr.id} - {pr.name}
+                              {pr.name}
                             </a>
                             <div className="flex items-center gap-2">
                               <p className="text-sm text-gray-400">
