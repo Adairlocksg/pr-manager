@@ -65,7 +65,6 @@ export default function Manager() {
       );
 
       doUpdatePrIds(prIds);
-      toast.success("Pull requests atualizadas com sucesso");
     } catch (error: unknown) {
       toast.error(
         `Ocorreu um erro ao buscar as Pull requests: ${AxiosService.handleError(
